@@ -1,0 +1,139 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Create Product{% endblock title %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Items</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Items</a></li>
+                            <li class="active">{% if creating %}Create{% else %}Update{% endif %}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">{% if creating %}Create{% else %}Update{% endif %} Product</strong>
+            </div>
+            <div class="card-body">
+                <!-- Credit Card -->
+                <div id="pay-invoice">
+                    <div class="card-body">
+                        <form method="post" onsubmit="return handleSubmit()" id="form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="name" class="control-label mb-1">Name</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="form-group">
+                                <label for="volume" class="control-label mb-1">Volume</label>
+                                {{ form.volume }}
+                            </div>
+                            <div class="form-group">
+                                <label for="sale_price" class="control-label mb-1">Sale Price</label>
+                                {{ form.sale_price }}
+                            </div>
+                            <div class="form-group">
+                                <label for="purchase_price" class="control-label mb-1">Purchace Price</label>
+                                {{ form.purchase_price }}
+                            </div>
+                            <div class="form-group">
+                                <label for="on_hand" class="control-label mb-1">On hand</label>
+                                {{ form.on_hand }}
+                            </div>
+                            <div class="form-group">
+                                <label for="group" class="control-label mb-1">Group</label>
+                                {{ form.group }}
+                            </div>
+                            <div class="form-group">
+                                <div class="autocomplete">
+                                    <label for="myInput" class="control-label mb-1">Supplier</label>
+                                    <input type="text" name="supplier_name" class="form-control" id="myInput"
+                                        required="" oninput="handleInput(this,'data')"
+                                        onkeydown="handleKeyDwon(event,this)" value="{{ supplier_name }}">
+                                    {{ form.supplier }}
+                                </div>
+
+                            </div>
+                            <div>
+                                <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                    <span id="payment-button-amount">{% if creating %}Create{% else %}Update{% endif %}
+                                        Product</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div> <!-- .card -->
+
+    </div><!--/.col-->
+</div>
+
+
+<script>
+    {% include "vinea/autocompletionJs.html" %}
+
+    let datas_need = {
+    }
+    let values = async () => {
+        try {
+            const fetch_data = await fetch("http://localhost:8000/api-suppliers");
+            const arr = await fetch_data.json();
+            datas_need["data"] = arr;
+        } catch (e) {
+            console.log(e)
+        }
+
+
+    }
+    const handleInput = (e, key) => {
+        autoCompleteInput(e, key);
+    }
+    const handleKeyDwon = (event, el) => {
+        keyDownAutoCompletion(event, el)
+    }
+    const handleSubmit = () => {
+        try {
+
+            const inp = document.getElementById("myInput");
+            const supplier = document.getElementById("supplier");
+            supplier.value = datas_need["data"][inp.value];
+            // TODO: handle case where supplier is not in data needed list
+            return true;
+
+        } catch (e) {
+
+            return false;
+        }
+
+    }
+
+    // begin of assync
+    const supplier = document.getElementById("supplier")
+    supplier.type = "hidden";
+    values().then((e) => console.log("data loading is finished"))
+
+</script>
+{% endblock content %}

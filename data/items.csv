@@ -1,0 +1,106 @@
+id,Name,Volume,id supplier,Purchase price,Sale price,OnHand
+58,Gekkeikan Black & Gold Sake,750,8320,9.28,12.99,6
+62,Herradura Silver Tequila,750,1128,28.67,36.99,2
+63,Herradura Reposado Tequila,750,1128,30.46,38.99,3
+72,No. 3 London Dry Gin,750,9165,26.11,34.99,8
+77,Three Olives Espresso Vodka,750,7245,10.39,14.99,14
+79,Three Olives Loopy Vodka,750,7245,9.62,14.99,12
+168,Three Olives Strawberry,750,7245,8.95,11.99,9
+173,Hornitos Reposado Glass Pack,750,12546,14.7,19.99,1
+175,1800 Anejo Tequila,750,7245,26.8,41.99,2
+178,Wild Turkey Russell's RSV,750,11567,20.76,26.99,29
+192,Milagro Anejo Tequila,750,3664,27.68,35.99,9
+211,Cold River Gin,750,4425,19.83,29.99,13
+233,Tullamore Dew 12 Yr Old,750,3664,30.21,42.99,4
+283,Milagro Tequila Reposado SBR,750,3664,39.69,57.99,4
+284,Milagro Tequila Anejo SBR,750,3664,53.43,77.99,1
+344,Punt e Mes Sweet Vermouth,750,9165,15.74,19.99,6
+361,Effen Cucumber Vodka,750,12546,14.28,19.99,17
+376,Aperol Liqueur,750,11567,18.97,28.99,11
+384,Ardbeg Corryvreckan Scotch,750,8112,54.68,69.99,4
+408,Wild Turkey American Honey,750,11567,12.97,17.99,15
+426,Crystal Head Vodka,50,9165,6.29,7.99,49
+435,Il Tramonto Limoncello,750,7153,12.79,15.99,4
+438,Licor 43 Vanilla Liqueur,750,4425,12.77,18.99,12
+443,St Germain Liqueur,750,480,24.45,33.99,19
+450,Vincent Van Gogh Double Esp,750,4425,19.52,24.99,7
+463,Kirk & Sweeney 12Yr Old Rum,750,653,24.63,33.99,4
+513,Ocean Vodka,750,9165,23.01,28.99,1
+515,Hirsch Selection Bourbon,750,9165,25.36,34.99,5
+525,El Tesoro Anejo Gold Tequil,750,12546,31.0,39.99,7
+538,Amaretto DiSaronno,375,2555,7.96,10.99,17
+543,Berkshire Mtn Ethereal Gin,750,9552,22.72,29.99,11
+555,Art In The Age Sage,750,3664,21.73,32.99,5
+607,Schmitt Sohne Funf Rsl,750,9552,5.74,8.99,16
+649,Sauza Tres Generaciones Pla,750,12546,28.67,39.99,11
+653,Dom de Canton Ginger Liqueur,750,3924,21.73,37.99,10
+661,Red Stag by Jim Beam,750,12546,9.99,13.99,54
+664,Ardbeg Uigeadail Scotch,750,8112,54.01,73.99,11
+676,Pinnacle Whipped Vodka,750,12546,8.65,10.99,20
+680,Midnight Moon Strawberry,750,9165,13.86,19.99,8
+686,Midnight Moon Cherry,750,9165,14.95,19.99,7
+743,Angels Envy Whiskey,750,480,36.5,49.99,0
+753,LaBelle Winery Blueberry,750,90032,13.79,19.99,15
+757,Jim Beam Rye,750,12546,13.95,17.99,11
+759,Bunnahabhain 12 Yr Single,750,9165,37.0,51.99,6
+782,Remy Martin 1738 Accord Ryl,750,7239,35.15,44.99,0
+802,Bacardi Torched Cherry Rum,750,480,7.99,9.99,3
+810,Bacardi Black Razz,750,480,7.19,9.99,3
+892,Uncle Val's Botanical Gin,750,653,24.99,33.99,5
+934,Tanteo Jalapeno Tequila,750,9165,26.08,35.99,7
+942,Glenmorangie Nectar D'Or,750,8112,45.45,59.99,6
+966,Patron Citronge Orange Liqu,750,9165,16.15,20.99,8
+970,Prairie Organic Kosher Vodka,750,9206,12.11,15.99,5
+984,Patron XO Cafe Liqueur,750,9165,20.63,25.99,22
+999,Jameson 18 Year Old,750,17035,89.84,119.99,0
+1094,Four Roses Single Barrel Brb,750,9552,29.92,41.99,4
+1106,Aberfeldy Single Cask,750,480,155.55,229.99,5
+1133,Glenmorangie Collection 4 Pk,100,8112,23.01,31.99,6
+1135,Rebel Reserve Bourbon,750,8352,15.62,20.99,7
+1178,Evan Williams Black Label B,750,3924,7.83,11.49,21
+1186,Evan Williams Single Barrel,750,3924,17.98,27.99,8
+1212,DiSaronna Amaretto Sour VAP,750,2555,14.38,19.99,123
+1220,Woodford Reserve Bourbon,750,1128,21.89,29.99,12
+1226,Lexington Bourbon,750,9625,19.99,25.99,8
+1228,Glenfiddich Ancient RSV 18,750,3664,69.76,94.99,0
+1231,Jack Daniels No 7 Black,375,1128,9.48,12.99,67
+1232,Jack Daniels No 7 Black,750,1128,15.93,26.99,182
+1237,Jack Daniels Single Barrel,750,1128,33.83,44.99,8
+1238,The Glenlivet 12 Yr Single,50,17035,3.56,4.99,74
+1239,Booker's Bourbon,750,12546,39.99,50.99,18
+1244,Jack Daniels Winter Jack,750,1128,12.79,15.99,19
+1258,Jim Beam Black,750,12546,17.03,22.99,13
+1269,Jeffersons Bourbon,750,1485,19.11,25.99,27
+1271,Jeffersons Reserve Bourbon,750,1485,37.59,49.99,13
+1274,No. 14 Bourbon,750,9165,34.88,44.99,0
+1282,1792 Small Batch Bourbon.,750,660,18.7,25.99,12
+1296,Tap 357 Maple Rye Whisky,750,4425,20.6,26.99,6
+1309,Makers Mark Cask Strength,750,12546,44.44,59.99,5
+1340,Jim Beam Jacob's Ghost,750,12546,14.05,21.99,47
+1345,Basil Hayden Bourbon,750,12546,28.45,37.99,37
+1346,Knob Creek Bourbon,750,12546,22.55,29.99,71
+1347,Bakers Bourbon,750,12546,31.24,39.99,45
+1348,Knob Creek Bourbon,375,12546,11.84,15.99,29
+1355,Knob Creek Bourbon,50,12546,2.59,3.49,61
+1359,Knob Creek Rye,750,12546,21.87,27.99,0
+1361,BenRiach 1994,750,9165,138.68,189.99,6
+1365,Stoli Mini Bar 5/50mLs Pack,50,8664,6.05,7.99,67
+1366,Red Stag by Jim Beam,50,12546,0.93,1.29,121
+1373,Jim Beam Honey,750,12546,10.36,13.99,36
+1375,Jim Beam,750,12546,11.5,16.49,94
+1378,Jim Beam,375,12546,7.08,9.49,44
+1379,Jim Beam Traveler,750,12546,11.41,16.49,33
+1382,Makers 46,750,12546,28.56,39.99,9
+1384,Bulleit 95 Rye,750,3960,18.93,27.99,55
+1385,Makers Mark,750,12546,20.45,26.99,105
+1386,George Dickel No 8 Bourbon,750,3960,14.59,19.99,11
+1389,Makers Mark,50,12546,2.18,2.99,0
+1392,Red Stag Hardcore Cider,750,12546,10.6,13.99,1
+1394,Makers Mark,375,12546,12.68,16.49,8
+1395,Old Crow,750,12546,5.88,7.99,26
+1397,Jim Beam Kentucky Fire,750,12546,10.76,13.99,46
+1398,Blantons Sgl Barrel Bourbon,750,8004,40.59,53.99,0
+1399,Jim Beam Signature Craft,750,12546,27.81,36.99,7
+1415,Old Grand Dad,750,12546,10.39,12.99,15
+1424,Bulleit Bourbon,375,3960,9.69,12.99,12
+1464,Tin Cup Whiskey,750,7245,19.22,24.99,5

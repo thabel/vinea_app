@@ -1,0 +1,172 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Check inventory{% endblock title %}
+
+{% block breadcrumbs %}
+<!-- Your breadcrumb code remains the same -->
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h4 class="box-title">{{ count }} items on hand below {{ threshold }}</h4>
+                    </div>
+                    <div class="col-md-3">
+                        <button id="generate-orders-button" type="button" class="btn btn-md btn-success btn-block"
+                            onclick="generatePdf()">
+                            <span id="generate-orders-button-icon" class="fa fa-plus-circle"></span>
+                            <span id="generate-orders-button-text">Generate Orders</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body--">
+                <div class="table-stats order-table ov-h">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="serial">#</th>
+                                <th>Name</th>
+                                <th>Volume</th>
+                                <th>Sale Price</th>
+                                <th>Purchase Price</th>
+                                <th>Supplier</th>
+                                <th>Class</th>
+                                <th>Order quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in low_inventory_items %}
+                            <tr>
+                                <td class="serial">{{ forloop.counter }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.volume }}</td>
+                                <td>{{ item.sale_price }}</td>
+                                <td>{{ item.purchase_price }}</td>
+                                <td>{{ item.supplier }}</td>
+                                <td>{{ item.group }}</td>
+                                <td>{{ item.order_quantity }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div> <!-- /.table-stats -->
+            </div>
+        </div> <!-- /.card -->
+    </div> <!-- /.col-lg-8 -->
+</div>
+
+<!-- Include jQuery and jsPDF, librairies for pdf generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js"></script>
+<!-- Include jszip from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script id="low_inventory_items_json" type="application/json">{{ low_inventory_items_json|safe }}</script>
+<script id="last_order_number_json" type="application/json">{{ last_order_number_json|safe }}</script>
+<script id="grouped_items_list_json" type="application/json">{{ grouped_items_list_json|safe }}</script>
+
+<script>
+    function generatePdf() {
+        //TODO : Améliorer le formattage des pdfs, Police, Soulignement, Logo, Pagination
+        //TODO : Générer un pdf d'ordre d'appro pour chaque fournisseur
+        //TODO : l'ordre d'appro doit comporter les détails du fournisseur, les meta-infos du document, la table des articles avec les quantités et les infos pertinentes
+
+
+        try {
+
+            // Assuming grouped_items_list is an array containing supplier information
+            const grouped_items_list = JSON.parse(document.getElementById('grouped_items_list_json').textContent.replace(/'/g, '"'));
+
+            const low_inventory_items = JSON.parse(document.getElementById('low_inventory_items_json').textContent.replace(/'/g, '"'));
+            console.log("Data : ", low_inventory_items);
+            const orderNumber = JSON.parse(document.getElementById('last_order_number_json').textContent.replace(/'/g, '"'))["last_order_number"];
+
+            for (let low_invent_item of low_inventory_items) {
+                const data = {
+                    "purchase_price": low_invent_item['purchase_price'],
+                    "quantity": low_invent_item['order_quantity'],
+                    "total_price": low_invent_item['purchase_price'] * low_invent_item['order_quantity'],
+                    "order_number": orderNumber,
+                    "item": low_invent_item['name'],
+                    "supplier": low_invent_item['supplier'],
+                };
+                // Example POST method implementation:
+                async function postData(url = "http://127.0.0.1:8000/api_add_orders", data = {}) {
+                    // Default options are marked with *
+                    const response = await fetch(url, {
+                        method: "POST", // *GET, POST, PUT, DELETE, etc.
+                        mode: "cors", // no-cors, *cors, same-origin
+                        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: "same-origin", // include, *same-origin, omit
+                        headers: {
+                            "Content-Type": "application/json",
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        redirect: "follow", // manual, *follow, error
+                        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                        body: JSON.stringify(data), // body data type must match "Content-Type" header
+                    });
+                    // return response.json(); // parses JSON response into native JavaScript objects
+                }
+
+                postData("http://127.0.0.1:8000/api_add_orders", data).then((data_bis) => {
+                    console.log(data_bis); // JSON data parsed by `data.json()` call
+                    setTimeout(() => { console.log("test") }, 1500);
+                });
+            }
+
+            const zip = new JSZip();
+            for (const supplierInfo of grouped_items_list) {
+
+                // Create a new jsPDF instance
+                const pdf = new jsPDF();
+
+                // Add content to the PDF
+                const generatedOn = new Date().toLocaleString(); // Get today's date and time
+
+                const supplierName = supplierInfo['Supplier_name'];
+                const items = supplierInfo['items'];
+
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(20);
+                pdf.text(`Order Details`, 15, 20);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(12);
+                pdf.text(`Supplier Name: ${supplierName}`, 15, 30, { underline: true });
+                pdf.text(`Order Number: ${orderNumber + 1}`, 15, 40, { url: 'javascript:void(0);', underline: true }); // TODO : The last argument is for underlining but seems not to work
+                pdf.text(`Generated on: ${generatedOn}`, 15, 50, { url: 'javascript:void(0);', underline: true });
+
+                pdf.autoTable({
+                    head: [["Name", "Volume", "Sale price", "Purchase price", "Group", "Order quantity"]],
+                    body: items.map(row => Object.values(row)),
+                    startY: 60,
+                    headStyles: { fontSize: 10, fontStyle: 'bold' }, // Set font size and style for the header
+                    bodyStyles: { fontSize: 10 }, // Set font size for the body
+                });
+
+                // Convert the PDF to arraybuffer
+                const pdfContent = pdf.output('arraybuffer');
+
+                // Add PDF to the zip file
+                zip.file(`order_details_${supplierInfo.Supplier_name}.pdf`, pdfContent);
+            }
+            // Generate the zip file
+            zip.generateAsync({ type: 'blob' })
+                .then(function (content) {
+                    // Trigger the download of the zip file
+                    saveAs(content, 'order_details.zip');
+                });
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
+    }
+</script>
+
+{% endblock content %}

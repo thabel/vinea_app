@@ -1,0 +1,160 @@
+    <div class="card-body">
+                    <div class="spinner-wrapper">
+                        <div class="spinner-border" role="status">
+
+                        </div>
+                        <h4 class="text-center">Loading .. </h4>
+                    </div>
+
+
+                    <div class="table-stats order-table ov-h">
+                        <div id="create_table">
+
+                        </div>
+                        {# pagination block#}
+                        {% block pagination %}
+                        <div class="body-pagination" id="body-pagination" style="display: none">
+                            <div class="pagination">
+                                <span class="pagination__number-indicator"></span>
+
+                                <a class="pagination__arrow"
+                                    href="{% url url_name %}?page={% if not page_obj.has_previous %}{{ page_obj.paginator.num_pages }}{% else %}{{ page_obj.previous_page_number }}{% endif %}">
+                                    <span class="pagination__arrow-half"></span>
+                                    <span class="pagination__arrow-half"></span>
+                                </a>
+
+                                {% for page_number in page_obj.adjusted_elided_pages %}
+
+                                {% if page_number == page_obj.paginator.ELLIPSIS %}
+                                <button class="pagination__number">{{ page_number }}</button>
+                                {% else %}
+                                <a href="{% url url_name %}?page={{ page_number }}">
+                                    <button
+                                        class="pagination__number {% if page_number == page_obj.number %}pagination__number--active{% endif %}">
+                                        {{page_number}}
+                                    </button>
+                                </a>
+                                {% endif %}
+                                {% endfor %}
+                                <a class="pagination__arrow pagination__arrow--right"
+                                    href="{% url url_name %}?page={% if not page_obj.has_next %}1{% else %}{{ page_obj.next_page_number }}{% endif %}">
+                                    <span class="pagination__arrow-half"></span>
+                                    <span class="pagination__arrow-half"></span>
+                                </a>
+                            </div>
+                        </div>
+                        {% endblock %}
+
+                    </div> <!-- /.table-stats -->
+                </div>
+
+<script>
+    const context = "http://localhost:8000/"
+    function createModalNode({modal,link, title="Confirmation", bodyText="Are you sure to delete ?"}) {
+  // Create the modal div element
+  var modalNode = document.createElement('div');
+  modalNode.className = 'modal fade';
+  modalNode.id = modal;
+  modalNode.tabIndex = -1;
+  modalNode.role = 'dialog';
+  modalNode.setAttribute('aria-labelledby', 'exampleModalLabel');
+  modalNode.setAttribute('aria-hidden', 'true');
+
+  // Create the modal dialog div element
+  var modalDialogNode = document.createElement('div');
+  modalDialogNode.className = 'modal-dialog';
+  modalDialogNode.role = 'document';
+
+  // Create the modal content div element
+  var modalContentNode = document.createElement('div');
+  modalContentNode.className = 'modal-content';
+
+  // Create the modal header
+  var modalHeaderNode = document.createElement('div');
+  modalHeaderNode.className = 'modal-header';
+
+  // Create the modal title
+  var modalTitleNode = document.createElement('h3');
+  modalTitleNode.className = 'modal-title text-center';
+  modalTitleNode.id = 'exampleModalLabel';
+  modalTitleNode.innerText = title;
+
+  // Create the close button
+  var closeButtonNode = document.createElement('button');
+  closeButtonNode.type = 'button';
+  closeButtonNode.className = 'close';
+  closeButtonNode.setAttribute('data-dismiss', 'modal');
+  closeButtonNode.setAttribute('aria-label', 'Close');
+
+  var closeIconNode = document.createElement('span');
+  closeIconNode.setAttribute('aria-hidden', 'true');
+  closeIconNode.innerHTML = '&times;';
+
+  closeButtonNode.appendChild(closeIconNode);
+
+  modalHeaderNode.appendChild(modalTitleNode);
+  modalHeaderNode.appendChild(closeButtonNode);
+
+  // Create the modal body
+  var modalBodyNode = document.createElement('div');
+  modalBodyNode.className = 'modal-body';
+  modalBodyNode.innerText = bodyText;
+
+  // Create the modal footer
+  var modalFooterNode = document.createElement('div');
+  modalFooterNode.className = 'modal-footer';
+
+  // Create the Close button
+  var closeButton = document.createElement('button');
+  closeButton.type = 'button';
+  closeButton.className = 'btn btn-secondary';
+  closeButton.setAttribute('data-dismiss', 'modal');
+  closeButton.innerText = 'Close';
+
+  // Create the Delete button
+  var deleteButton = document.createElement('a');
+  deleteButton.className = 'btn btn-danger';
+  deleteButton.style.color = 'white';
+  deleteButton.innerText = 'Delete';
+  deleteButton.href = context+link;
+
+  modalFooterNode.appendChild(closeButton);
+  modalFooterNode.appendChild(deleteButton);
+
+  // Append all elements to build the modal structure
+  modalContentNode.appendChild(modalHeaderNode);
+  modalContentNode.appendChild(modalBodyNode);
+  modalContentNode.appendChild(modalFooterNode);
+
+  modalDialogNode.appendChild(modalContentNode);
+
+  modalNode.appendChild(modalDialogNode);
+
+  return modalNode;
+}
+
+    function addthelement(className, textContent, tagName = "td") {
+        const el = document.createElement(tagName);
+        el.className = className || "";
+        el.textContent = textContent || "";
+        return el;
+    }
+    // add in the incluse
+    const addButton = (button)=>{
+
+        const td = document.createElement("td");
+        const a = document.createElement("a");
+        const i = document.createElement("i");
+        i.className = button["icon-class"]
+        a.appendChild(i);
+        a.style.color = "white";
+        a.href = context+button["link"];
+        a.className = "text-center "+button["class"]
+        if(!button["update"]){
+            a.setAttribute("data-toggle","modal");
+            a.setAttribute("data-target","#modal"+button["link"])
+        }
+        td.appendChild(a)
+        return td
+    }
+</script>

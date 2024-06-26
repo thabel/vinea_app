@@ -1,0 +1,125 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Order List{% endblock title %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Orders</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Orders</a></li>
+                            <li class="active">List</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body flex_display">
+                <h4 class="box-title">Order List </h4>
+                <button class="btn btn-success">
+                    <span id="generate-orders-button-icon" class="fa fa-plus-circle"></span>
+                    <a href="{% url 'create-orders' %}" class="white-text">Add</a>
+                </button>
+            </div>
+            {% include "vinea/table_list.html" with page_obj=page_obj url_name=url_name %}
+        </div> <!-- /.card -->
+    </div> <!-- /.col-lg-8 -->
+
+
+</div>
+<script>
+    // TODO: Propose a better way of dealing with this instead of coppying
+    // code form the dashboard.html
+
+    console.log("hey dashboard");
+
+
+
+    function base_table() {
+
+        const table_container = document.getElementById("create_table");
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(document.createElement("table")).appendChild(
+            document.createElement("thead")).appendChild(document.createElement("tr")
+            ).append(
+                addthelement("Serial", "#", "th"),
+                addthelement("", "Order Date", "th"),
+                addthelement("", "Receiving Date", "th"),
+                addthelement("", "Purchase Price", "th"),
+                addthelement("", "Quantity", "th"),
+                addthelement("", "Total Price", "th"),
+                addthelement("", "Order Number", "th"),
+                addthelement("", "Item", "th"),
+                addthelement("", "Supplier", "th"),
+                addthelement("", "modifier", "th"),
+                addthelement("", "supprimer", "th")
+            )
+
+        table_container.append(
+            fragment
+        )
+    }
+
+    // fetch datas
+    const page = new URL(document.URL).searchParams.get("page");
+    let values = fetch(`/api_get_order_by_page?page=${page ? page : 1}`).then((e) => {
+        e.json().then((val) => {
+            // delete speener
+            document.getElementsByClassName("spinner-wrapper")[0].style.display = "none"
+            document.getElementsByClassName("body-pagination")[0].style.display = ""
+            base_table()
+                ;
+            const tbody = document.createElement("tbody");
+            // TODO : MAKE THE 50 A CONSTANT
+            let i = (page - 1) * 50 + 1;
+            if (i <= 0) {
+                i += 50; // Update the value of i
+            }
+            for (const data of val) {
+                const tr = document.createDocumentFragment()
+                tr.appendChild(document.createElement("tr"))
+                    .append(
+                        addthelement("", `${i++}`), // JACINTHO : J'ai ajusté l'index a affiché ici
+                        // Cependant le loading est lent je pense que c'est parce que tu charges tous
+                        //les records à chaque fois. Norrmalement il faut charger uniquement ce qui correspond à cette page en particulier.
+                        addthelement("", data["order_date"])
+                        , addthelement("", data["reception_date"])
+                        , addthelement("", data["purchase_price"])
+                        , addthelement("", data["quantity"])
+                        , addthelement("", data["total_price"])
+                        , addthelement("", data["order_number"])
+                        , addthelement("", data["item"])
+                        , addthelement("", data["supplier"])
+                        , addButton({ "class": "btn btn-info", "icon-class": "fa fa-pencil-square-o", "link": "update-orders/" + data["pk"], "update": true })
+                        , addButton({ "class": "btn btn-danger", "icon-class": "fa fa-trash", "link": data["pk"] })
+                    );
+                tbody.append(tr);
+                document.body.appendChild(createModalNode({ "modal": "modal" + data["pk"], link: "delete-orders/" + data["pk"] }));
+
+            }
+            const table_container = document.getElementById("create_table");
+            table_container.getElementsByTagName("table")[0].append(tbody)
+        })
+    }, (err) => {
+        console.log(err);
+    })
+</script>
+{% endblock content %}

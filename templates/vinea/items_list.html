@@ -1,0 +1,123 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Product List{% endblock title %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Items</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Items</a></li>
+                            <li class="active">List</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="orders">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body flex_display">
+                    <h4 class="box-title">Product List </h4>
+                    <button class="btn btn-success">
+                        <span id="generate-orders-button-icon" class="fa fa-plus-circle"></span>
+                        <a href="{% url 'create-item' %}" class="white-text">Add</a>
+                    </button>
+                </div>
+                {% include "vinea/table_list.html" with page_obj=page_obj url_name=url_name %}
+            </div> <!-- /.card -->
+        </div> <!-- /.col-lg-8 -->
+
+
+    </div>
+</div>
+
+
+<script>
+    console.log("hey dashboard");
+
+
+
+    function base_table() {
+
+        const table_container = document.getElementById("create_table");
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(document.createElement("table")).appendChild(
+            document.createElement("thead")).appendChild(document.createElement("tr")
+            ).append(
+                addthelement("Serial", "#", "th"),
+                addthelement("", "Name", "th"),
+                addthelement("", "Volume", "th"),
+                addthelement("", "Sale Price", "th"),
+                addthelement("", "On Hand", "th"),
+                addthelement("", "Supplier", "th"),
+                addthelement("", "Group", "th"),
+                addthelement("", "modifier", "th"),
+                addthelement("", "supprimer", "th")
+            )
+
+        table_container.append(
+            fragment
+        )
+    }
+
+    // fetch datas
+    const page = new URL(document.URL).searchParams.get("page");
+    let values = fetch(`/api_get_items_by_page?page=${page ? page : 1}`).then((e) => {
+        e.json().then((val) => {
+            // delete speener
+            document.getElementsByClassName("spinner-wrapper")[0].style.display = "none"
+            document.getElementsByClassName("body-pagination")[0].style.display = ""
+            base_table()
+                ;
+            const tbody = document.createElement("tbody");
+            // TODO : MAKE THE 50 A CONSTANT
+            // TODO: ADD OPS something went wrong when  loading the data and have errors
+            let i = (page - 1) * 50 + 1;
+            if (i <= 0) {
+                i += 50; // Update the value of i
+            }
+            for (const data of val) {
+                const tr = document.createDocumentFragment()
+                tr.appendChild(document.createElement("tr"))
+                    .append(
+                        addthelement("", `${i++}`), // JACINTHO : J'ai ajusté l'index a affiché ici
+                        // Cependant le loading est lent je pense que c'est parce que tu charges tous
+                        //les records à chaque fois. Norrmalement il faut charger uniquement ce qui correspond à cette page en particulier.
+                        addthelement("", data["name"])
+                        , addthelement("", data["volume"])
+                        , addthelement("", data["sale_price"])
+                        , addthelement("", data["on_hand"])
+                        , addthelement("", data["supplier"])
+                        , addthelement("", data["group"])
+                        , addButton({ "class": "btn btn-info", "icon-class": "fa fa-pencil-square-o", "link": "update-items/" + data["pk"], "update": true })
+                        , addButton({ "class": "btn btn-danger", "icon-class": "fa fa-trash", "link": data["pk"] })
+                    );
+                tbody.append(tr)
+                document.body.appendChild(createModalNode({ "modal": "modal" + data["pk"], link: "delete-items/" + data["pk"] }));
+
+            }
+            const table_container = document.getElementById("create_table");
+            table_container.getElementsByTagName("table")[0].append(tbody)
+        })
+    }, (err) => {
+        console.log(err);
+    })
+</script>
+{% endblock content %}

@@ -1,0 +1,148 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Create Order{% endblock title %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Orders</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Orders</a></li>
+                            <li class="active">{% if creating %}Create{% else %}Update{% endif %}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">{% if creating %}Create{% else %}Update{% endif %} Order</strong>
+            </div>
+            <div class="card-body">
+                <!-- Credit Card -->
+                <div id="pay-invoice">
+                    <div class="card-body">
+                        <form action="#" method="post" onsubmit="return handleSubmit()">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="supplier" class="control-label mb-1">Supplier</label>
+                                <input type="text" name="supplier_name" class="form-control" id="supplier_name"
+                                    required="" oninput="handleInput(this,'suppliers')"
+                                    onkeydown="handleKeyDwon(event,this)" value="{{ supplier_name }}">
+                                {{ form.supplier }}
+                            </div>
+                            <div class="form-group">
+                                <label for="item" class="control-label mb-1">Item</label>
+                                <input type="text" name="item_name" class="form-control" id="item_name" required=""
+                                    oninput="handleInput(this,'items')" onkeydown="handleKeyDwon(event,this)"
+                                    value="{{ item_name }}">
+
+                                {{ form.item }}
+                            </div>
+                            <div class="form-group">
+                                <label for="order_date" class="control-label mb-1">Order Date</label>
+                                {{ form.order_date }}
+                            </div>
+                            <div class="form-group">
+                                <label for="reception_date" class="control-label mb-1">Reception Date</label>
+                                {{ form.reception_date }}
+                            </div>
+                            <div class="form-group">
+                                <label for="order_number" class="control-label mb-1">Order Number</label>
+                                {{ form.order_number }}
+                            </div>
+                            <div class="form-group">
+                                <label for="purchase_price" class="control-label mb-1">Purchase Price</label>
+                                {{ form.purchase_price }}
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity" class="control-label mb-1">Quantity</label>
+                                {{ form.quantity }}
+                            </div>
+                            <div class="form-group">
+                                <label for="total_price" class="control-label mb-1">Total Price</label>
+                                {{ form.total_price }}
+                            </div>
+                            <div>
+                                <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                    <span id="payment-button-amount">{% if creating %}Create{% else %}Update{% endif %}
+                                        Order</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div> <!-- .card -->
+
+    </div><!--/.col-->
+</div>
+<script>
+    {% include "vinea/autocompletionJs.html" %}
+    let datas_need = {
+    }
+
+    const URL = "http://127.0.0.1:8000/"
+    let values = async () => {
+        try {
+            const fetch_data = await fetch(`${URL}api-suppliers`);
+            const arr = await fetch_data.json();
+            datas_need["suppliers"] = arr;
+        } catch (e) {
+            console.log(e)
+        }
+        try {
+            const fetch_data = await fetch(`${URL}api_items_list`);
+            const arr = await fetch_data.json();
+            datas_need["items"] = arr;
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    const handleSubmit = () => {
+        try {
+
+            const inp_supplier_name = document.getElementById("supplier_name");
+            document.getElementById("supplier").value = datas_need["suppliers"][inp_supplier_name.value];
+            const inp_item_name = document.getElementById("item_name");
+            document.getElementById("item").value = datas_need["items"][inp_item_name.value];
+            // TODO: handle case where supplier is not in data needed list
+            return true;
+
+        } catch (e) {
+            // TODO: make feedback to the user to inform him about the error cause
+            return false;
+        }
+
+    }
+    const handleInput = (e, key) => {
+        autoCompleteInput(e, key);
+    }
+    const handleKeyDwon = (event, el) => {
+        keyDownAutoCompletion(event, el)
+    }
+    // begin of assync
+    document.getElementById("supplier").type = "hidden"
+    document.getElementById("item").type = "hidden"
+
+    values().then((e) => console.log("finished loading data"))
+</script>
+{% endblock content %}

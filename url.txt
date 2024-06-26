@@ -1,0 +1,7 @@
+postgres://ooxqmkrg:806iN98wNm-xuBSXYlmsORGhwMh3j7Qa@berry.db.elephantsql.com/ooxqmkrg
+
+
+# - make the ideas increamenting in descending oder and next 
+# changes in  the order csv files
+
+

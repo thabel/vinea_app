@@ -1,0 +1,185 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Create Order{% endblock title %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Management</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Management</a></li>
+                            <li><a href="#">Forecast</a></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+                <!-- Credit Card -->
+                <div id="pay-invoice">
+                    <div class="card-body">
+                        <!-- your_template.html -->
+                        <form action="#" id="forecast_form" method="post" onsubmit="return handleSubmit()">
+                            {% csrf_token %}
+
+                            <!-- Your existing form fields... -->
+
+                            <div class="form-group">
+                                <label for="item" class="control-label mb-1">Item</label>
+                                <input type="text" name="item_name" class="form-control" id="item_name" required=""
+                                    oninput="handleInput(this,'items')" onkeydown="handleKeyDwon(event,this)"
+                                    value="{{ item_name }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="item_id" class="control-label mb-1">Item Id</label>
+                                <input type="text" name="item_id" class="form-control" id="item_id" required=""
+                                    disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="item_volume" class="control-label mb-1">Item Volume</label>
+                                <input type="text" name="item_volume" class="form-control" id="item_volume" required=""
+                                    disabled>
+                            </div>
+
+                        </form>
+
+                        <div class="form-chart">
+                            <div id="data_state">No data available</div>
+                            <canvas id="myChart" width="400" height="200"></canvas>
+                        </div>
+
+                        <!-- Timeline graph -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div> <!-- .card -->
+
+    </div><!--/.col-->
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% include "vinea/autocompletionJs.html" %}
+    let datas_need = {
+    }
+
+    const URL = "http://127.0.0.1:8000/"
+    let values = async () => {
+        try {
+            const fetch_data = await fetch(`${URL}api_items_forecast`);
+            const arr = await fetch_data.json();
+            console.log("Data here : ", arr);
+            datas_need["items"] = arr;
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    const handleSubmit = () => {
+        try {
+
+            const inp_item_name = document.getElementById("item_name");
+            document.getElementById("item").value = datas_need["items"][inp_item_name.value];
+            // TODO: handle case where supplier is not in data needed list
+            return true;
+
+        } catch (e) {
+            // TODO: make feedback to the user to inform him about the error cause
+            return false;
+        }
+
+    }
+    const handleInput = (e, key) => {
+        autoCompleteInput(e, key);
+    }
+    const handleKeyDwon = (event, el) => {
+        keyDownAutoCompletion(event, el)
+    }
+
+    function updateItemIdAndVolume(val) {
+        var x = document.getElementById("item_id");
+        x.value = datas_need["items"][val]["pk"];
+
+        var x_vol = document.getElementById("item_volume");
+        x_vol.value = datas_need["items"][val]["volume"];
+
+        // New Chart.js code
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Movember', 'December'];
+        const fetch_timeline_data = fetch(`${URL}api_timeline_data?item_id=${x.value}`).then(
+            (
+                res
+            ) => {
+                const data_json = res.json().then(
+                    (data) => {
+                        document.getElementById('data_state').style.display = "none";
+                        const accurate_labels = [];
+                        for (let month of data["months"]) {
+                            accurate_labels.push(labels[month - 1]);
+                        }
+                        const myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: accurate_labels,
+                                datasets: [{
+                                    label: val + "'s actual",
+                                    data: data["actual"], // id as input the API
+                                    fill: false,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    tension: 0.1
+                                },
+                                {
+                                    label: val + "'s forecast",
+                                    data: data["forecast"],
+                                    fill: false,
+                                    borderColor: 'rgb(192, 80, 192)',
+                                    tension: 0.1
+                                }
+
+                                ]
+                            }
+                        });
+                    }
+                );
+            }
+        ).catch((e) => console.log(e));
+
+    }
+    // begin of assync
+    // document.getElementById("item").type = "hidden"
+
+    values().then((e) => console.log("finished loading data"))
+
+</script>
+
+<style>
+    #forecast_form {
+        display: grid;
+        justify-content: space-between;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 5em;
+    }
+</style>
+{% endblock content %}
